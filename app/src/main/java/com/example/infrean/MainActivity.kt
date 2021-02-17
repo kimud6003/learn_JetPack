@@ -3,11 +3,12 @@ package com.example.infrean
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
-import kotlinx.android.synthetic.main.activity_main.*
+import com.example.infrean.databinding.ActivityMainBinding
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -15,17 +16,11 @@ import kotlinx.coroutines.launch
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        val binding =  DataBindingUtil.setContentView<ActivityMainBinding>(this,R.layout.activity_main)
+        binding.lifecycleOwner = this
+
         val viewModel: MainViewModel by viewModels()
+        binding.viewModel =viewModel
 
-        viewModel.getAll().observe(this, Observer { todos ->
-            result_text.text = todos.toString()
-        })
-
-        add_Button.setOnClickListener{
-            lifecycleScope.launch(Dispatchers.IO){
-                viewModel.insert(Todo(todo_Edit.text.toString()))
-            }
-        }
     }
 }
