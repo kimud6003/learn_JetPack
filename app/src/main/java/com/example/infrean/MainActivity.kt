@@ -2,6 +2,7 @@ package com.example.infrean
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.lifecycle.Observer
 import androidx.room.Room
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -14,11 +15,12 @@ class MainActivity : AppCompatActivity() {
             applicationContext,
             AppDatabase::class.java, "database-name"
         ).allowMainThreadQueries().build()
+        db.todoDao().getAll().observe(this, Observer { todos ->
+            result_text.text = todos.toString()
+        })
 
-        result_text.text = db.todoDao().getAll().toString()
         add_Button.setOnClickListener{
             db.todoDao().insert(Todo(todo_Edit.text.toString()))
-            result_text.text = db.todoDao().getAll().toString()
         }
     }
 }
